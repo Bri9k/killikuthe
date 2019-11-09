@@ -10,7 +10,7 @@
 
 * Give key permissions to club- by admin- three dropdowns- select club, place and key
 
-* Add place- by admin, whether it is a place students are allowed to access and / or a keystore (2 bools)
+* Add place- by admin, whether it is a place students are allowed to access and / or a keystore (2 bools) (SECOND BOOL NOT IMPLEMENTED)
 
 * Add key- by admin, for which place? dropdown should exist, specify initial location or holder of key (to simplify simply put in location which it ulocks), the 'which place' cannot be a 
 
@@ -25,3 +25,7 @@
 * Grant request- see view of all requests for keys which you posses- once request is granted, all other requests for same key from 'you' to be dismissed, entry made into log, holdership of key officially transferred.
 
 * Show user- status of keys which he can access, pending requests from user, pending requests for user- either as a form, with multiple rows and buttons in each row which he/she can submit or as a dropdown, chosing one will give information about that
+
+* Whether lab is open or not open- in case it is open, only then can you pick up or place key there ADDITIONAL, LATER
+
+* Whether person can use a particular key

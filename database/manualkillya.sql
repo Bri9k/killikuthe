@@ -21,6 +21,7 @@ CREATE TABLE person (
 CREATE TABLE place (
 	pid INT NOT NULL AUTO_INCREMENT,
 	name VARCHAR(45) NOT NULL,
+	store BOOL NOT NULL,
 	PRIMARY KEY (pid),
 	UNIQUE (name)
 );
@@ -44,7 +45,9 @@ CREATE TABLE club (
 	clubname VARCHAR(45) NOT NULL,
 	managed_by VARCHAR(9) NOT NULL,
 	PRIMARY KEY (cid),
-	FOREIGN KEY (managed_by) REFERENCES person(MIS)); -- delete to be handled by application code)
+	FOREIGN KEY (managed_by) REFERENCES person(MIS), -- delete to be handled by application code
+	UNIQUE (clubname));
+
 
 CREATE TABLE request_key (
 	destination VARCHAR(9) NOT NULL, -- person requesting key
@@ -84,6 +87,7 @@ CREATE TABLE person_memberof_club (
 	club_cid INT NOT NULL,
 	PRIMARY KEY (person_MIS, club_cid),
 	FOREIGN KEY (person_MIS) REFERENCES person(MIS) ON DELETE CASCADE,
-	FOREIGN KEY (club_cid) REFERENCES club(cid) ON DELETE CASCADE);
+	FOREIGN KEY (club_cid) REFERENCES club(cid) ON DELETE CASCADE
+);
 
 

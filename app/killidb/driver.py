@@ -1,24 +1,39 @@
-import sys
+from config import *
 from inserts import *
+from errors import *
 
-conn = killiconnection()
-if not conn:
-    sys.exit(1)
+def debugexec(func, *args, correctret = 0):
+    ret = func(db, *args)
+    if ret != 0:
+        print(*args)
+        print(ret)
 
-"""
-ret = registeruser(conn, "1145", "Ard", "inus", "8000000000", "ard@tak.com")
-print(ret)
-ret = registeruser(conn, "1145", "Ard", "inus", "1000000000", "ar1@tak.com")
-ret = registeruser(conn, "1146", "Ard", "inus", "2000000000", "ar2@tak.com")
-ret = registeruser(conn, "1147", "Ard", "inus", "3000000000", "ar3@tak.com")
-ret = registeruser(conn, "1148", "Ard", "inus", "4000000000", "ar4@tak.com")
-ret = registeruser(conn, "1149", "Ard", "inus", "5000000000", "ar5@tak.com")
-ret = registeruser(conn, "11450", "Ard", "inus","6800000000", "ar6@tak.com")
-"""
-
-
-
-
-ret = addclub(conn, "CSAT")
-print(ret)
+db = database(KILLIDBCONFIG)
+#debugexec(registeruser, "11450", "Evil", "Mind", "1111111111", "gru@evil.com")
+#debugexec(registeruser, "11145", "Obidient", "Follower", "0000000000", "follow@yahoo.com")
+#debugexec(registerplace, "Rapid Prototyping Lab")
+#debugexec(registeruser, "111703333", "Yahska", "Rahdoed", "6666666666", "fighterdhingra@yahoo.com")
+#debugexec(registerclub, "D&D", "111703333")
+#debugexec(registerplace, "Boat Club Gallery")
+#debugexec(changemanager, "1", "11145")
+#debugexec(registerplace, "Security Section", True)
+#debugexec(addkey, 2)
+#debugexec(grantkeypermission, 1, 2, 1)
+#debugexec(addkey, 2)
+#debugexec(grantkeypermission, 1, 2, 1)
+#debugexec(addkey, 1)
+#debugexec(grantkeypermission, 1, 2, 2)
+#debugexec(addclubmember, 1, "111703333")
+#debugexec(addclubmember, 1, "11450")
+#debugexec(addclubmember, 1, "11145")
+debugexec(pickup_key, "111703333", 2, 1)
+#debugexec(person_canuse_key, "111703333", 2, 1)
+#debugexec(person_canuse_key, "11145", 1, 1)
+#debugexec(place_key, "111703333", 2, 1, 2)
+#debugexec(place_key, "111703333", 2, 1, 3)
+#debugexec(place_key, "111703333", 2, 1, 1)
+#debugexec(request_key, "11145", 2, 2)
+debugexec(request_key, "11145", 2, 1)
+debugexec(transfer_key, "11450", 2, 1)
+debugexec(transfer_key, "11145", 2, 1)
 

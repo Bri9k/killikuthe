@@ -1,76 +1,5 @@
-import mysql.connector
-from mysql.connector import errorcode
 from errors import *
-
-
-class database:
-    def __init__(self, dbconfig):
-        self.cnx = None
-        self.latestrowcount = 0
-        try:
-            self.cnx = mysql.connector.connect(**dbconfig)
-        except mysql.connector.Error as error:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
-            else:
-                print(err)
-
-
-    ##
-    # @brief Tries to execute an insert, returns error if there is an exception
-    # 
-    # @param connection a connection to the mysql server
-    # @param query query statement to be executed, with placeholders for parameters in order
-    # @param parameters parameters to be substituted in query
-    def exec_insert(self, query, parameters):
-        cur = self.cnx.cursor()
-        retval = 0
-        try:
-            cur.execute(query, parameters)
-        except mysql.connector.Error as error:
-            print(error)
-            retval = error.errno
-            self.cnx.rollback()
-        else:
-            print("Commited")
-            self.cnx.commit()
-            self.lastid = cur.lastrowid
-            self.latestrowcount = cur.rowcount
-        finally:
-            cur.close()
-        return retval
-
-    def query(self, query, parameters):
-        cur = self.cnx.cursor()
-
-        cur.execute(query, parameters)
-
-        return cur.fetchall()
-
-
-    def commit(self):
-        print("Commit")
-        self.cnx.commit()
-
-    def rollback(self):
-        self.cnx.rollback()
-
-    def run_modification(self, query, parameters):
-        cur = self.cnx.cursor()
-        try:
-            cur.execute(query, parameters)
-        except mysql.connector.Error as error:
-            retval = error.errno
-            self.cnx.rollback()
-        else:
-            retval = 0
-            self.lastid = cur.lastrowid
-            self.latestrowcount = cur.rowcount
-        finally:
-            cur.close()
-        return retval
+from mysql.connector import errorcode
 
 
 # @param connection a connection to the database
@@ -134,10 +63,15 @@ def registerclub(db, clubname, managed_by):
                     (clubname, managed_by)
                     VALUES (%s, %s) ''')
 
-    retval = db.exec_insert(add_club, datatuple)
+    retval = db.run_modification(add_club, datatuple)
     if retval == errorcode.ER_DUP_ENTRY:
         retval = ALREADYREGISTERED
-    return retval
+    elif retval == errorcode.ER_NO_REFERENCED_ROW_2:
+        retval = INVALIDMANAGER
+    else:
+        print(db.lastrowid)
+        return addclubmember(db, db.lastrowid, managed_by)
+
 
 
 def changemanager(db, cid, new_manager):
@@ -145,18 +79,17 @@ def changemanager(db, cid, new_manager):
     if len(new_manager) < 1 or len(new_manager) > 10:
         return  MISERROR
 
+    
+    checkmembership = ('''SELECT COUNT(*)
+                          FROM person_memberof_club
+                          WHERE (club_cid, person_MIS) = (%s, %s)''')
     datatuple = (new_manager, cid)
-    #check_membership = ('''SELECT true '''
-    #                   '''WHERE "%s" IN '''
-    #                   '''(SELECT person_MIS '''
-    #                   '''FROM person_memberof_club AS M'''
-    #                   '''WHERE M.club_cid = %d)''')
-    #res = db.query(check_membership, datatuple)
-    #print(res[1])
-    #if res[0][0] != 0:
-    #    return res[0][0]
-    #elif res[1][0] == False:
-    #    return NOTMEMBER
+    res = db.query(checkmembership, datatuple)
+    ismember = res[0][0] == 1
+    if not ismember:
+        return NOTAMEMBER
+
+
     change_manager = ('''UPDATE club
                          SET managed_by = %s 
                          WHERE cid = %s ''')

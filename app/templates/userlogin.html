@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+<div class="text-center">
+	<form class="form-signin" action="/user/mykeys" method="POST">
+		<div class="container">
+			<label for="inputEmail" class="sr-only">MIS</label>
+			<input type="text" id="inputusername" class="form-control" name="inputusername"  placeholder="MIS Number" required autofocus>
+		</div>
+		<br>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+	</form>
+</div>
+{% endblock %}

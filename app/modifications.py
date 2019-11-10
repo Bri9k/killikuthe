@@ -71,6 +71,7 @@ def registerclub(db, clubname, managed_by):
     else:
         print(db.lastrowid)
         return addclubmember(db, db.lastrowid, managed_by)
+    return retval
 
 
 

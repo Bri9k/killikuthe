@@ -44,11 +44,14 @@
 				<td>
 				<form action="/admin/places" method="POST">
 					<button type="submit" name="c {{ place_id }}" id = "c{{ place_id }}" class="btn-primary">Change
+					</button>
 				</form>
 				</td>
 			</td>
 			<td>
-				<button type="submit" class="btn-primary">Keys</button>
+				<form action="/admin/placekeys", method="POST">
+					<button type="submit" class="btn-primary" name="{{ place_id }}" id="{{place_id}}">Keys</button>
+				</form>
 			</td>
 		</tr>
 

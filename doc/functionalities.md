@@ -29,3 +29,5 @@
 * Whether lab is open or not open- in case it is open, only then can you pick up or place key there ADDITIONAL, LATER
 
 * Whether person can use a particular key
+
+* Search for person using MIS

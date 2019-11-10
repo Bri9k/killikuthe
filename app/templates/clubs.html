@@ -1,0 +1,49 @@
+
+
+{% extends "adminlayout.html" %}
+
+{% block main %}
+
+<table class="table table-bordered table-dark">
+	<thead>
+	</thead><thead>
+		<tr>
+			<th>Club</th>
+			<th>Managed By</th>
+			<th>Name</th>
+			<th>Mobile Number</th>
+			<th>Email Address</th>
+		</tr>
+	</thead>
+	<tbody>
+		<form action="/admin/clubs" method="POST">
+			<tr>
+				<td><input type="text" class="form-control" id="newclub" name="newclub" placeholder="New Club"></td>
+				<td><input type="text" class="form-control" id="manager" name = "manager" placeholder="Manager MIS"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td><button type="submit" class="btn-primary" id="add", name="add">Add</button></td>
+			</tr>
+		</form>
+
+
+		{% for club_id, clubname, manager, manager_name, manager_last, manager_phoneno, manager_email in clubs %}
+
+		<tr>
+			<td>{{ clubname }}</td>
+			<td>{{ manager }}</td>
+			<td>{{ manager_name }} {{ manager_last }}</td>
+			<td>{{ manager_phoneno }}</td>
+			<td>{{ manager_email }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+
+</table>
+	<p>
+	{{ error }}
+	</p>
+{% endblock %}

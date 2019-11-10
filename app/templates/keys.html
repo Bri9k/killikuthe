@@ -1,0 +1,90 @@
+
+
+
+{% extends "userlayout.html" %}
+
+{% block main %}
+
+{% if held | length != 0 %}
+<h2 align="top" >Keys I hold</h2>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<th>Place</th>
+			<th>Key</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for name, key_id in held %}
+
+		<tr>
+			<td>{{ name }}</td>
+			<td>{{ key_id }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+
+{% if stored | length  != 0 %}
+
+<h2 align="top">Keys kept at keystores</h2>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>Place</td>
+			<td>Key</td>
+			<td>Kept</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for name, key_id, place in stored %}
+
+		<tr>
+			<td>{{ name }}</td>
+			<td>{{ key_id }}</td>
+			<td>{{ place }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+
+
+{% if others | length != 0 %}
+<h2 align="centre">Keys Held By Others</h2>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>Place</td>
+			<td>Key</td>
+			<td>MIS</td>
+			<td>Name</td>
+			<td>Contact At</td>
+			<td>Email</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for place_name, key_id, person_mis, person_f, person_l, person_mobile, person_email in others %}
+
+		<tr>
+			<td>{{ place_name }}</td>
+			<td>{{ key_id }}</td>
+			<td>{{ person_mis }}</td>
+			<td>{{ person_f }} {{ person_l }}</td>
+			<td>{{ person_mobile }}</td>
+			<td>{{ person_email }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+
+
+{% endblock %}

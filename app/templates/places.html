@@ -1,0 +1,59 @@
+
+
+{% extends "adminlayout.html" %}
+
+{% block main %}
+
+<table class="table table-bordered table-dark">
+	<thead>
+		<tr>
+			<th>Place</th>
+			<th>Store?</th>
+			<th>Change</th>
+			<th>Keys</th>
+		</tr>
+	</thead><thead>
+		<tr>
+			<th>Place</th>
+			<th>Store?</th>
+			<th>Storage Property</th>
+			<th>Keys</th>
+		</tr>
+	</thead>
+	<tbody>
+		<form action="/admin/places" method="POST">
+			<tr>
+				<td><input type="text" class="form-control" id="newplace" name="newplace" placeholder="New Place"></td>
+				<td><input type="checkbox" class="form-control" id="isstorage" name = "isstorage"></td>
+				<td></td>
+				<td><button type="submit" name="add" id="add" class="btn-primary">Add</button></td>
+			</tr>
+		</form>
+
+
+		{% for place_id, placename, store in places %}
+
+		<tr>
+			<td>{{ placename }}</td>
+			<td>
+				{% if store %}
+				Yes
+				{% else %}
+				No
+				{% endif %}
+				<td>
+				<form action="/admin/places" method="POST">
+					<button type="submit" name="c {{ place_id }}" id = "c{{ place_id }}" class="btn-primary">Change
+				</form>
+				</td>
+			</td>
+			<td>
+				<button type="submit" class="btn-primary">Keys</button>
+			</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endblock %}

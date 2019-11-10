@@ -84,8 +84,9 @@ def changemanager(db, cid, new_manager):
     checkmembership = ('''SELECT COUNT(*)
                           FROM person_memberof_club
                           WHERE (club_cid, person_MIS) = (%s, %s)''')
-    datatuple = (new_manager, cid)
+    datatuple = (cid, new_manager)
     res = db.query(checkmembership, datatuple)
+    print(res)
     ismember = res[0][0] == 1
     if not ismember:
         return NOTAMEMBER
@@ -94,8 +95,8 @@ def changemanager(db, cid, new_manager):
     change_manager = ('''UPDATE club
                          SET managed_by = %s 
                          WHERE cid = %s ''')
+    datatuple = (new_manager, cid)
 
-    retval = 0
     retval = db.exec_insert(change_manager, datatuple)
     return retval
 
@@ -260,24 +261,32 @@ def transfer_key(db, destination_person_MIS, place_pid, key_kid):
                            WHERE (place_pid, kid) = (%s, %s)''')
     datatuple = (destination_person_MIS, place_pid, key_kid)
 
+    print(datatuple)
     retval = db.run_modification(holdershipupdate, datatuple)
+    print(db.latestrowcount)
     if retval != 0:
         return retval
 
-    requestremove = ('''DELETE
-                        FROM request_key
-                        WHERE (destination, place_pid, key_id) = (%s, %s, %s)''')
-    datatuple = (destination_person_MIS, place_pid, key_kid)
-    
-    retval = db.run_modification(requestremove, datatuple)
-    
-    if retval == 0 and db.latestrowcount != 1:
-        db.rollback()
-        retval = TRANSFERWITHOUTREQUEST
     elif retval == 0:
-        db.commit()
 
+        deleterequests = ('''DELETE 
+                             FROM request_key
+                             WHERE (key_id, place_pid) = (%s, %s)''')
+        datatuple = (key_kid, place_pid)
+    
+        retval = db.exec_insert(deleterequests, datatuple)
+    
     return retval
 
 
+def kickuser(db, kicker_manager, kicked_member, club_cid):
+    if kicker_manager == kicked_member:
+        return CANNOTKICKYOURSELF
+    deletion = '''DELETE
+                   FROM person_memberof_club
+                   WHERE (person_MIS, club_cid) = (%s, %s)'''
+    datatuple = (kicked_member, club_cid)
 
+    retval = db.exec_insert(deletion, datatuple)
+    return retval
+                   

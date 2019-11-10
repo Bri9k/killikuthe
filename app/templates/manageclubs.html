@@ -1,0 +1,46 @@
+
+
+{% extends "userlayout.html" %}
+
+{% block main %}
+
+{% if clubs | length != 0 %}
+<table class="table table-bordered table-dark">
+	<thead>
+	</thead><thead>
+		<tr>
+			<th>#</th>
+			<th>Club</th>
+			<th>Manage</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		{% for club_id, clubname in clubs %}
+
+		<tr>
+			<td>{{ loop.index }}</td>
+			<td>{{ clubname }}</td>
+			<td>
+				<form action="/user/managethisclub", method="POST">
+					<button type="submit" class="btn-primary" name="whichclub" id="whichclub" value="{{ club_id }}">
+						Manage
+					</button>
+				</form>
+			</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+
+</table>
+{% else %}
+<p>
+Unfortunately, you are not a manager of any club. DON'T PANIC- lots of opportunities to get political around here
+</p>
+{% endif %}
+	<p>
+	{{ error }}
+	</p>
+{% endblock %}

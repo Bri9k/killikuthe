@@ -50,6 +50,7 @@ class database:
 
 
     def commit(self):
+        print("Commited")
         self.cnx.commit()
 
     def rollback(self):

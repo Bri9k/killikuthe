@@ -12,20 +12,81 @@
 		<tr>
 			<th>Place</th>
 			<th>Key</th>
+			<th>Where to place</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		{% for name, key_id in held %}
+		{% for pid, key_id, pname, where_to_keep in held %}
 
 		<tr>
-			<td>{{ name }}</td>
+			<td>{{ pname }}</td>
 			<td>{{ key_id }}</td>
+			<form action="/user/mykeys", method="POST">
+			<td>
+				<select name="where_to_keep">
+					{% for id, name in where_to_keep %}
+					<option value="{{ id }}">{{ name }}</option>
+					{% endfor %}
+				</select>
+			</td>
+			<td>
+				<button type="submit" name="which_key" id="which_key" value="{{ pid }} {{ key_id }}" class="btn-primary">Place Key</button>
+			</td>
+			</form>
 		</tr>
 
 		{% endfor %}
 
 	</tbody>
 </table>
+{% endif %}
+
+
+
+{% if requested_from_me | length != 0 %}
+<h2 align="centre">Keys Requested From Me</h2>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>Place</td>
+			<td>Key</td>
+			<td>MIS</td>
+			<td>Name</td>
+			<td>Contact At</td>
+			<td>Email</td>
+			<td>Grant Request</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for pid, place_name, key_id, person_mis, person_f, person_l, person_mobile, person_email in requested_from_me %}
+
+		<tr>
+			<td>{{ place_name }}</td>
+			<td>{{ key_id }}</td>
+			<td>{{ person_mis }}</td>
+			<td>{{ person_f }} {{ person_l }}</td>
+			<td>{{ person_mobile }}</td>
+			<td>{{ person_email }}</td>
+			<td>
+			<form action="/user/mykeys", method="POST">
+				<button type="submit" name="transfer_key" id="transfer_key" value="{{ person_mis }} {{ pid }} {{ key_id }}" class="btn-primary">Transfer Key</button>
+			</form>
+			</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+
+
+
+{% if error %}
+<p>
+{{ error }}
+</p>
 {% endif %}
 
 {% if stored | length  != 0 %}
@@ -40,12 +101,17 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for name, key_id, place in stored %}
+		{% for pid, name, key_id, place in stored %}
 
 		<tr>
 			<td>{{ name }}</td>
 			<td>{{ key_id }}</td>
 			<td>{{ place }}</td>
+			<form action="/user/mykeys", method="POST">
+			<td>
+				<button type="submit" name="pickup_key" id="pickup_key" value="{{ pid }} {{ key_id }}" class="btn-primary">Pick Up</button>
+			</td>
+			</form>
 		</tr>
 
 		{% endfor %}
@@ -53,6 +119,40 @@
 	</tbody>
 </table>
 {% endif %}
+
+
+{% if requested | length != 0 %}
+<h2 align="centre">Keys Requested</h2>
+<table class="table table-bordered table-striped">
+	<thead>
+		<tr>
+			<td>Place</td>
+			<td>Key</td>
+			<td>MIS</td>
+			<td>Name</td>
+			<td>Contact At</td>
+			<td>Email</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for pid, place_name, key_id, person_mis, person_f, person_l, person_mobile, person_email in requested %}
+
+		<tr>
+			<td>{{ place_name }}</td>
+			<td>{{ key_id }}</td>
+			<td>{{ person_mis }}</td>
+			<td>{{ person_f }} {{ person_l }}</td>
+			<td>{{ person_mobile }}</td>
+			<td>{{ person_email }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+
+
 
 
 {% if others | length != 0 %}
@@ -66,10 +166,11 @@
 			<td>Name</td>
 			<td>Contact At</td>
 			<td>Email</td>
+			<td>Request</td>
 		</tr>
 	</thead>
 	<tbody>
-		{% for place_name, key_id, person_mis, person_f, person_l, person_mobile, person_email in others %}
+		{% for pid, place_name, key_id, person_mis, person_f, person_l, person_mobile, person_email in others %}
 
 		<tr>
 			<td>{{ place_name }}</td>
@@ -78,6 +179,11 @@
 			<td>{{ person_f }} {{ person_l }}</td>
 			<td>{{ person_mobile }}</td>
 			<td>{{ person_email }}</td>
+			<td>
+			<form action="/user/mykeys", method="POST">
+				<button type="submit" name="request_key" id="request_key" value="{{ pid }} {{ key_id }}" class="btn-primary">Make Request</button>
+			</form>
+			</td>
 		</tr>
 
 		{% endfor %}

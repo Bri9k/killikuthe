@@ -1,0 +1,68 @@
+
+
+{% extends "userlayout.html" %}
+
+{% block main %}
+
+<form action="/user/managethisclub" method="post">
+	<select name="who_to_add">
+		{% for mis, first_name, last_name in all_users %}
+		<option value="{{ mis }}">
+		{{ mis }} {{ first_name }} {{ last_name }}
+		</option>
+		{% endfor %}
+	</select>
+	<button type="submit" name="add" id="add" class="btn-primary">Add
+	</button>
+</form>
+
+{% if members | length != 0 %}
+<table class="table table-bordered table-dark">
+	<thead>
+		<tr>
+			<th>MIS</th>
+			<th>Name</th>
+			<th>Mobile No</th>
+			<th>Email</th>
+			<th>Remove</th>
+			<th>Make Manager</th>
+		</tr>
+	</thead>
+	<tbody>
+
+
+
+		{% for mis, first_name, last_name, mobileno, email in members %}
+
+		<tr>
+			<td>{{ mis }}</td>
+			<td>{{ first_name }} {{ last_name }}</td>
+			<td>{{ mobileno }}</td>
+			<td>{{ email }}</td>
+			<td>
+				<form action="/user/managethisclub" method="post">
+					<button type="submit" class="btn-primary" name="removeuser" id="removeuser" value="{{ mis }}">
+						Kick!
+					</button>
+				</form>
+			</td>
+			<td>
+				<form action="/user/mymembership" method="post">
+					<button type="submit" class="btn-primary" name="makemanager" id="makemanager" value="{{ mis }}">
+						Elevate!
+					</button>
+				</form>
+			</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+{% endif %}
+{% if error %}
+<p>
+{{ error }}
+</p>
+{% endif %}
+{% endblock %}

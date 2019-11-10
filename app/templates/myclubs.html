@@ -1,0 +1,30 @@
+
+
+{% extends "userlayout.html" %}
+
+{% block main %}
+
+<table class="table table-bordered table-dark">
+	<thead>
+	</thead><thead>
+		<tr>
+			<th>#</th>
+			<th>Club</th>
+		</tr>
+	</thead>
+		{% for club_id, clubname in clubs %}
+
+		<tr>
+			<td>{{ loop.index }}</td>
+			<td>{{ clubname }}</td>
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+
+</table>
+	<p>
+	{{ error }}
+	</p>
+{% endblock %}

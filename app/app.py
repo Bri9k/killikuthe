@@ -300,8 +300,9 @@ def manageclubs():
         else:
             print("GOT A CHANGE REQUEST", request.form, request.args)
 
+    people_list = getpeople(db)
     club_data = getclubs(db)
-    return render_template("clubs.html", clubs =  club_data, error = error)
+    return render_template("clubs.html", clubs =  club_data, people = people_list, error = error)
 
 
 

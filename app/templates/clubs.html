@@ -19,7 +19,13 @@
 		<form action="/admin/clubs" method="POST">
 			<tr>
 				<td><input type="text" class="form-control" id="newclub" name="newclub" placeholder="New Club"></td>
-				<td><input type="text" class="form-control" id="manager" name = "manager" placeholder="Manager MIS"></td>
+				<td>
+					<select name="manager" id="manager">
+						{% for mis, first_name, last_name in people %}
+						<option value="{{ mis }}">{{ mis }} {{ first_name }} {{ last_name }}</option>
+						{% endfor %}
+					</select>
+				</td>
 				<td></td>
 				<td></td>
 				<td></td>
@@ -43,7 +49,9 @@
 	</tbody>
 
 </table>
-	<p>
-	{{ error }}
-	</p>
+{% if error %}
+<p>
+{{ error }}
+</p>
+{% endif %}
 {% endblock %}

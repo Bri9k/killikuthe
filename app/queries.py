@@ -1,6 +1,12 @@
 from errors import *
 from mysql.connector import errorcode
 
+def getpeople(db):
+    search = '''SELECT MIS, first_name, last_name
+                FROM person
+                ORDER BY MIS'''
+    parameters = None
+    return db.query(search, parameters)
 
 def getplaces(db):
     

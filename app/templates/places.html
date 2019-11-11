@@ -11,13 +11,7 @@
 			<th>Store?</th>
 			<th>Change</th>
 			<th>Keys</th>
-		</tr>
-	</thead><thead>
-		<tr>
-			<th>Place</th>
-			<th>Store?</th>
-			<th>Storage Property</th>
-			<th>Keys</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,6 +19,7 @@
 			<tr>
 				<td><input type="text" class="form-control" id="newplace" name="newplace" placeholder="New Place"></td>
 				<td><input type="checkbox" class="form-control" id="isstorage" name = "isstorage"></td>
+				<td></td>
 				<td></td>
 				<td><button type="submit" name="add" id="add" class="btn-primary">Add</button></td>
 			</tr>
@@ -43,14 +38,14 @@
 				{% endif %}
 				<td>
 				<form action="/admin/places" method="POST">
-					<button type="submit" name="c {{ place_id }}" id = "c{{ place_id }}" class="btn-primary">Change
+					<button type="submit" name="change_store" id = "change_store" class="btn-primary" value="{{ place_id }}">Change
 					</button>
 				</form>
 				</td>
 			</td>
 			<td>
 				<form action="/admin/placekeys", method="POST">
-					<button type="submit" class="btn-primary" name="{{ place_id }}" id="{{place_id}}">Keys</button>
+					<button type="submit" class="btn-primary" name="keys" id="keys" value="{{ place_id }}">Keys</button>
 				</form>
 			</td>
 		</tr>

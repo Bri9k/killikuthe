@@ -52,14 +52,46 @@ def userlogin():
 @app.route('/user/mykeys', methods = ["POST", "GET"])
 def userkeys():
     error = None
+    print(request.form)
     if "inputusername" in request.form:
+        print("Logging in")
         if not user_login(db, request.form["inputusername"]):
             return render_template("error.html", mainerror = "Sorry", suberror = "Unable to Log In")
 
         mis = request.form["inputusername"]
 
         session["mis"] = mis
+
+    elif "register" in request.form:
+        print("Request", request)
+        print("Form Is Empty", request.form)
+        firstname = request.form.get('firstName')
+        lastname = request.form['lastName']
+        mis = request.form['username']
+        email = request.form['email'] 
+        phoneno = request.form['phoneno']
+
+        registered = registeruser(db, mis, firstname, lastname, phoneno, email)
+
+        errorlist = [(LARGENAME, "Name too large"), (MISERROR, "MIS Invalid"), (EMAIL, "Email Invalid"), (WRONGNO, "Phone number invalid"), (ALREADYREGISTERED, "Invalid Registration")]
+        message = None
+        if registered != 0:
+            for error in errorlist:
+                if registered == error[0]:
+                    print(error[1])
+                    message = error[1]
+                    break
+            
+            if not message:
+                message = "Please try again"
+
+            return render_template("register.html", error = message)
+
+        session["mis"] = mis
+        print(session)
+
     else:
+        print("Back")
         mis = session["mis"]
         if "where_to_keep" in request.form:
             # place key 
@@ -188,10 +220,6 @@ def myclubs():
 def adminjobs():
     return render_template("admin.html")
 
-@app.route('/admin/placekeys', methods = ["POST"])
-def managekeys():
-    pid = int(list(request.form.keys())[0])
-    return str(list(map(lambda x: x[0], getkeys_of_place(db, pid))))
 
 @app.route('/admin/places', methods = ["GET", "POST"])
 def manageplaces():
@@ -210,6 +238,10 @@ def manageplaces():
                 error = "Duplicate Place"
             elif retval != 0:
                 error = "Unable to register place " + placename
+        elif "change_store" in request.form:
+            which_place = int(request.form["change_store"])
+            ret = change_storage(db, which_place)
+
         else:
             print("GOT A CHANGE REQUEST", request.form, request.args)
 
@@ -217,13 +249,45 @@ def manageplaces():
     return render_template("places.html", places = place_data, error = error)
 
 
+@app.route('/admin/placekeys', methods = ["GET", "POST"])
+def managekeys():
+    place_pid = None
+    print(request.form)
+    if "keys" in request.form:
+        place_pid = int(request.form["keys"])
+        session["place_pid"] = place_pid
+    elif "add" in request.form and "place_pid" in session:
+        # coming here with intention to add from same page
+        key_id = int(request.form["add"])
+        club_cid = int(request.form["which_club"])
+        place_pid = session["place_pid"]
+        retval = grantkeypermission(db, club_cid, place_pid, key_id)
+        if retval != 0:
+            pass
+    elif "remove" in request.form and "place_pid" in session:
+        key_id = int(request.form["remove"])
+        club_cid = int(request.form["which_club"])
+        place_pid = session["place_pid"]
+        retval = removekeypermission(db, club_cid, place_pid, key_id)
+        if retval != 0:
+            pass
+    elif "addkey" in request.form:
+        place_pid = session["place_pid"]
+        retval = addkey(db, place_pid)
+        if retval != 0:
+            pass
+
+    placename = getplacename(db, place_pid)
+    print("Showing Keys For", place_pid)
+    keysinfo = getkeysinfo(db, place_pid)
+    return render_template("placekeys.html", keys = keysinfo, placename = placename)
+
+
 @app.route('/admin/clubs', methods = ["GET", "POST"])
 def manageclubs():
     error = None
     if request.method == "POST":
-        print("GOT A NEW PLACE", request.form)
         if "add" in request.form:
-            print("I AM INSIDE CLUB")
             placename = request.form['newclub']
             manager = request.form['manager']
             retval = registerclub(db, placename, manager)

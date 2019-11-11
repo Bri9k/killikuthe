@@ -163,6 +163,22 @@ def grantkeypermission(db, club_cid, place_pid, key_kid):
         retval = ALREADYREGISTERED
     return retval
 
+def removekeypermission(db, club_cid, place_pid, key_kid):
+    
+    datatuple = (club_cid, key_kid, place_pid)
+    print("Removing", datatuple)
+    permissionentry = ('''DELETE
+                          FROM club_canuse_key
+                          WHERE (club_cid, key_kid, key_place_pid) =  (%s, %s, %s) ''')
+    
+    retval = db.exec_insert(permissionentry, datatuple)
+    if retval == errorcode.ER_NO_REFERENCED_ROW_2:
+        print("Key does not exist")
+        retval = KEYDOESNOTEXIST
+    return retval
+
+
+
 
 def person_canuse_key(db, person_MIS, place_pid, key_kid):
         datatuple = (person_MIS, place_pid, key_kid)
@@ -290,3 +306,13 @@ def kickuser(db, kicker_manager, kicked_member, club_cid):
     retval = db.exec_insert(deletion, datatuple)
     return retval
                    
+
+def change_storage(db, place_pid):
+
+    modification = '''UPDATE place
+                      SET store = NOT store
+                      WHERE pid = %s'''
+    parameters = (place_pid,)
+
+    retval = db.exec_insert(modification, parameters)
+    return retval

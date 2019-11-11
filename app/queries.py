@@ -159,3 +159,56 @@ def getallcandidates_notme(db, my_mis):
                 WHERE MIS <> %s'''
     parameters = (my_mis,)
     return db.query(search, parameters)
+
+def getkeysinfo(db, place_pid):
+    killisearch = '''SELECT kid
+                     FROM killi
+                     WHERE place_pid = %s'''
+    parameters = (place_pid,)
+    
+    extractfirst = lambda x: x[0]
+
+    list_of_keys = list(map(extractfirst, db.query(killisearch, parameters)))
+
+    keys_and_permissions = []
+
+    for key in list_of_keys:
+        print(key)
+        search_clubs_permitted = '''SELECT C.cid, C.clubname
+                                    FROM club_canuse_key U
+                                    INNER JOIN club C
+                                    ON C.cid = U.club_cid
+                                    WHERE (U.key_place_pid, U.key_kid) =
+                                    (%s, %s)'''
+        parameters = (place_pid, key)
+
+        permitted_clubs_list = db.query(search_clubs_permitted, parameters)
+
+        search_not_permitted_clubs ='''SELECT cid, clubname
+                                       FROM club
+                                       WHERE cid NOT IN
+                                       (SELECT C.cid
+                                       FROM club_canuse_key U
+                                       INNER JOIN club C
+                                       ON C.cid = U.club_cid
+                                       WHERE (U.key_place_pid, U.key_kid) =
+                                       (%s, %s))'''
+        parameters = (place_pid, key)
+        not_permitted_clubs_list = db.query(search_not_permitted_clubs, parameters)
+
+        keys_and_permissions.append((key,
+                permitted_clubs_list, 
+                not_permitted_clubs_list))
+    
+    return keys_and_permissions
+
+
+def getplacename(db, place_pid):
+    search = '''SELECT name 
+                FROM place
+                WHERE pid = %s'''
+    parameters = (place_pid,)
+    extractfirst = lambda x: x[0][0]
+    placename = extractfirst(db.query(search, parameters))
+    return placename
+

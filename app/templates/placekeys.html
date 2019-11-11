@@ -1,0 +1,72 @@
+{% extends "adminlayout.html" %}
+
+{% block main %}
+
+<div align="center">
+	<h3>
+		Keys for {{ placename }}
+	</h3>
+</div>
+
+<table class="table table-bordered table-dark">
+	<thead>
+		<tr>
+			<th>Key</th>
+			<th>Add Permissions</th>
+			<th>Add</th>
+			<th>Remove Permissions</th>
+			<th>Remove</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		{% for key_id, permitted, not_permitted in keys%}
+
+		<tr>
+			<td>{{ key_id }}</td>
+			<form action="/admin/placekeys" method="POST">
+			<td>
+				<select name="which_club">
+					{% for cid, clubname in not_permitted %}
+					<option value="{{ cid }}">
+					{{ clubname }}
+					</option>
+
+					{% endfor %}
+				</select>
+			</td>
+			<td>
+				<button type="submit" name="add" id="add" class="btn-primary" value="{{ key_id }}">Elevate!</button>
+			</td>
+			</form>
+			<form action="/admin/placekeys" method="POST">
+			<td>
+				<select name="which_club">
+					{% for cid, clubname in permitted %}
+					<option value="{{ cid }}">
+					{{ clubname }}
+					</option>
+
+					{% endfor %}
+				</select>
+			</td>
+			<td>
+				<button type="submit" name="remove" id="remove" class="btn-primary" value="{{ key_id }}">Kick!</button>
+			</td>
+			</form>
+
+		</tr>
+
+		{% endfor %}
+
+	</tbody>
+</table>
+
+
+<div align="center">
+	<form action="/admin/placekeys" method="POST">
+		<button type="submit" name="addkey" id="addkey" class="btn-primary" value="ADD">Add New Key</button>
+	</form>
+</div>
+
+{% endblock %}

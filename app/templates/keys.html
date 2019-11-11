@@ -6,7 +6,9 @@
 {% block main %}
 
 {% if held | length != 0 %}
-<h2 align="top" >Keys I hold</h2>
+<div >
+<h5 align="top" >Keys I hold</h5>
+</div>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
@@ -40,12 +42,20 @@
 
 	</tbody>
 </table>
+{% else %}
+<div >
+<h5 align="top" >No keys held</h5>
+</div>
 {% endif %}
+
+<hr/>
 
 
 
 {% if requested_from_me | length != 0 %}
-<h2 align="centre">Keys Requested From Me</h2>
+<div >
+<h5 align="centre">Keys Requested From Me</h5>
+</div>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
@@ -79,7 +89,13 @@
 
 	</tbody>
 </table>
+{% else %}
+<div >
+<h5 align="centre">No pending requests for keys</h5>
+</div>
 {% endif %}
+
+<hr/>
 
 
 
@@ -90,8 +106,9 @@
 {% endif %}
 
 {% if stored | length  != 0 %}
-
-<h2 align="top">Keys kept at keystores</h2>
+<div >
+<h5 align="top">Keys kept at keystores</h5>
+</div>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
@@ -118,11 +135,19 @@
 
 	</tbody>
 </table>
+{% else %}
+<div >
+<h5 align="top">No accessible keys kept at keystores</h5>
+</div>
 {% endif %}
+
+<hr/>
 
 
 {% if requested | length != 0 %}
-<h2 align="centre">Keys Requested</h2>
+<div >
+<h5 align="centre">Keys Requested</h5>
+</div>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
@@ -150,13 +175,21 @@
 
 	</tbody>
 </table>
+{% else %}
+<div >
+<h5 align="centre">No key requests made</h5>
+</div>
 {% endif %}
+
+<hr/>
 
 
 
 
 {% if others | length != 0 %}
-<h2 align="centre">Keys Held By Others</h2>
+<div >
+<h5 align="centre">Keys Held By Others</h5>
+</div>
 <table class="table table-bordered table-striped">
 	<thead>
 		<tr>
@@ -190,7 +223,13 @@
 
 	</tbody>
 </table>
+{% else %}
+<div >
+<h5 align="centre">No accessible keys held by others</h5>
+</div>
 {% endif %}
+
+<hr/>
 
 
 {% endblock %}

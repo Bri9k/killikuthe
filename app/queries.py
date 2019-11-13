@@ -128,7 +128,7 @@ def user_login(db, person_MIS, password):
         return False
 
     hash_brownies = result[0][0]
-    print(hash_brownies)
+    #print(hash_brownies)
 
     return exists and check_password_hash(hash_brownies, password)
 
@@ -190,7 +190,7 @@ def getkeysinfo(db, place_pid):
     keys_and_permissions = []
 
     for key in list_of_keys:
-        print(key)
+        #print(key)
         search_clubs_permitted = '''SELECT C.cid, C.clubname
                                     FROM club_canuse_key U
                                     INNER JOIN club C

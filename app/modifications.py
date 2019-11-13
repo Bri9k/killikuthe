@@ -74,7 +74,7 @@ def registerclub(db, clubname, managed_by):
     elif retval == errorcode.ER_NO_REFERENCED_ROW_2:
         retval = INVALIDMANAGER
     else:
-        print(db.lastrowid)
+        #print(db.lastrowid)
         return addclubmember(db, db.lastrowid, managed_by)
     return retval
 
@@ -101,7 +101,7 @@ def changemanager(db, cid, new_manager):
                           WHERE (club_cid, person_MIS) = (%s, %s)''')
     datatuple = (cid, new_manager)
     res = db.query(checkmembership, datatuple)
-    print(res)
+    #print(res)
     ismember = res[0][0] == 1
     if not ismember:
         return NOTAMEMBER
@@ -134,13 +134,13 @@ def addkey(db, place_pid, store_pid = None):
     if store_pid == None:
         store_pid = place_pid
     else:
-        print("Entered Else")
+        #print("Entered Else")
         datatuple = (store_pid, )
         check_whether_store = ('''SELECT store
                                   FROM place
                                   WHERE pid = %s''')
         output = db.query(check_whether_store, datatuple)
-        print(output)
+        #print(output)
         if len(output) == 0: # storage place invalid
             return NOTASTORAGEPLACE
 
@@ -151,7 +151,7 @@ def addkey(db, place_pid, store_pid = None):
                           WHERE place_pid = %s ''')
 
     result = db.query(find_no_of_keys, datatuple)
-    print("Reached here")
+    #print("Reached here")
     kitikillya = result[0][0]
 
 
@@ -181,14 +181,14 @@ def grantkeypermission(db, club_cid, place_pid, key_kid):
 def removekeypermission(db, club_cid, place_pid, key_kid):
     
     datatuple = (club_cid, key_kid, place_pid)
-    print("Removing", datatuple)
+    #print("Removing", datatuple)
     permissionentry = ('''DELETE
                           FROM club_canuse_key
                           WHERE (club_cid, key_kid, key_place_pid) =  (%s, %s, %s) ''')
     
     retval = db.exec_modification(permissionentry, datatuple)
     if retval == errorcode.ER_NO_REFERENCED_ROW_2:
-        print("Key does not exist")
+        #print("Key does not exist")
         retval = KEYDOESNOTEXIST
     return retval
 
@@ -203,7 +203,7 @@ def person_canuse_key(db, person_MIS, place_pid, key_kid):
                            WHERE %s = M.person_MIS 
                            AND (%s, %s) = (U.key_place_pid, U.key_kid)''')
         total = db.query(canaccesskey, datatuple)
-        print(total)
+        #print(total)
 
         return total[0][0] == 1
         
@@ -220,7 +220,7 @@ def pickup_key(db, person_MIS, place_pid, key_kid):
     retval = db.exec_modification(change_holdership, datatuple)
     
     if retval == 0 and db.latestrowcount == 0:
-        print(db.latestrowcount)
+        #print(db.latestrowcount)
         retval = INVALIDKEY
 
     return retval
@@ -268,7 +268,7 @@ def request_key(db, person_MIS, place_pid, key_kid):
                   WHERE (kid, place_pid) = (%s, %s) AND person_MIS IS NOT NULL and NOT(person_MIS = %s)''')
     datatuple = (key_kid, place_pid, person_MIS)
     total = db.query(keyheld, datatuple)
-    print("Total", total)
+    #print("Total", total)
     personholds = total[0][0] == 1
     if not personholds:
         return INVALIDREQUEST
@@ -292,9 +292,9 @@ def transfer_key(db, destination_person_MIS, place_pid, key_kid):
                            WHERE (place_pid, kid) = (%s, %s)''')
     datatuple = (destination_person_MIS, place_pid, key_kid)
 
-    print(datatuple)
+    #print(datatuple)
     retval = db.run_modification(holdershipupdate, datatuple)
-    print(db.latestrowcount)
+    #print(db.latestrowcount)
     if retval != 0:
         return retval
 

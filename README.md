@@ -1,4 +1,4 @@
-# KilliKuthe
+![Killi Kuthe?](app/static/images/killikuthelogo.png)
 ## A web application for tracking keys of college labs
 
 ## Problem Statement

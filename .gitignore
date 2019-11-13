@@ -4,3 +4,6 @@ crud/*
 *__pycache__/
 tags
 \.*
+doc/*.pdf
+doc/*.html
+doc/*.tar.gz

@@ -21,8 +21,6 @@ def registration():
 
 @app.route('/keys', methods= ['POST'])
 def signin_register():
-    #print("Request", request)
-    #print("Form Is Empty", request.form)
     firstname = request.form.get('firstName')
     password = request.form.get('password')
     password2 = request.form.get('password1')
@@ -37,7 +35,6 @@ def signin_register():
     if registered != 0:
         for error in errorlist:
             if registered == error[0]:
-                #print(error[1])
                 message = error[1]
                 break
             
@@ -55,9 +52,7 @@ def userlogin():
 @app.route('/user/mykeys', methods = ["POST", "GET"])
 def userkeys():
     error = None
-    #print(request.form)
     if "inputusername" in request.form:
-        #print("Logging in")
         if not user_login(db, request.form["inputusername"], request.form["password"]):
             return render_template("error.html", mainerror = "Sorry", suberror = "Unable to Log In")
 
@@ -66,8 +61,6 @@ def userkeys():
         session["mis"] = mis
 
     elif "register" in request.form:
-        #print("Request", request)
-        #print("Form Is Empty", request.form)
         firstname = request.form.get('firstName')
         lastname = request.form['lastName']
         mis = request.form['username']
@@ -83,7 +76,6 @@ def userkeys():
         if registered != 0:
             for error in errorlist:
                 if registered == error[0]:
-                    #print(error[1])
                     message = error[1]
                     break
             
@@ -93,16 +85,13 @@ def userkeys():
             return render_template("register.html", error = message)
 
         session["mis"] = mis
-        #print(session)
 
     else:
-        #print("Back")
         mis = session["mis"]
         if "where_to_keep" in request.form:
             # place key 
             key_place_pid, key_id = map(int, request.form["which_key"].split())
             store_place = int(request.form["where_to_keep"])
-            #print(mis, key_place_pid, key_id, store_place)
             retval = place_key(db, mis, key_place_pid, key_id, store_place)
             if retval != 0:
                 error = "Cannot Keep Key There"
@@ -129,7 +118,6 @@ def userkeys():
             key_place_pid, key_id= map(int, transfer_info[1:3])
             destination_mis = transfer_info[0]
             retval = transfer_key(db, destination_mis, key_place_pid, key_id)
-            #print("CANNOT TRANSFER", retval)
             if retval != 0:
                 error = "Cannot make that transfer"
 
@@ -167,7 +155,6 @@ def showclubs():
 
 @app.route('/user/managethisclub', methods = ["POST"])
 def manageclub():
-    #print(request.form)
     if "mis" not in session or ("whichclub" not in request.form and ("removeuser" not in request.form and "add" not in request.form)):
         return render_template("error.html", mainerror = "You may not access this URL", suberror = "Keep your prying hands to yourself")
 
@@ -205,12 +192,9 @@ def myclubs():
             club_cid = int(session["whichclub"])
             new_manager = request.form["makemanager"]
             session.pop("whichclub")
-            #print(club_cid, new_manager)
             retval = changemanager(db, club_cid, new_manager)
             if retval != 0:
                 session["whichclub"] = club_cid
-                #print("Why does this keep happening to me")
-                #print(retval)
         else:
             return render_template("error.html", mainerror = "You may not access this URL", suberror = "Keep your prying hands to yourself")
 
@@ -230,9 +214,7 @@ def adminjobs():
 def manageplaces():
     error = None
     if request.method == "POST":
-        #print("GOT A NEW PLACE", request.form)
         if "add" in request.form:
-            #print("I AM INSIDE")
             placename = request.form['newplace']
             if "isstorage" in request.form:
                 store = True
@@ -252,8 +234,6 @@ def manageplaces():
             if ret != 0:
                 pass
 
-        else:
-            #print("GOT A CHANGE REQUEST", request.form, request.args)
 
     place_data = getplaces(db)
     return render_template("places.html", places = place_data, error = error)
@@ -262,7 +242,6 @@ def manageplaces():
 @app.route('/admin/placekeys', methods = ["GET", "POST"])
 def managekeys():
     place_pid = None
-    #print(request.form)
     if "keys" in request.form:
         place_pid = int(request.form["keys"])
         session["place_pid"] = place_pid
@@ -288,7 +267,6 @@ def managekeys():
             pass
 
     placename = getplacename(db, place_pid)
-    #print("Showing Keys For", place_pid)
     keysinfo = getkeysinfo(db, place_pid)
     return render_template("placekeys.html", keys = keysinfo, placename = placename)
 
@@ -313,8 +291,6 @@ def manageclubs():
             retval = removeclub(db, who_to_remove)
             if retval != 0:
                 pass
-        else:
-            #print("GOT A CHANGE REQUEST", request.form, request.args)
 
     people_list = getpeople(db)
     club_data = getclubs(db)

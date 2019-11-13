@@ -1,5 +1,6 @@
 from errors import *
 from mysql.connector import errorcode
+from werkzeug.security import generate_password_hash
 
 
 # @param connection a connection to the database
@@ -8,7 +9,7 @@ from mysql.connector import errorcode
 # @param last_name maximum 20 characters
 # @param phoneno string, a 10 digit mobile number
 # @param email string, of form a@b.com maximum 45 characters
-def registeruser(db, MIS, first_name, last_name, phoneno, email):
+def registeruser(db, MIS, first_name, last_name, phoneno, email, password, check_password):
 
     if len(MIS) > 9 or len(MIS) < 1:
         return MISERROR
@@ -25,13 +26,17 @@ def registeruser(db, MIS, first_name, last_name, phoneno, email):
     if len(email) < 10 or len(email) > 45:
         return EMAIL
 
-    datatuple = (MIS, first_name, last_name, phoneno, email)
+    if password != check_password:
+        return PASSWORD
+
+    hash_password = generate_password_hash(password)
+    datatuple = (MIS, first_name, last_name, phoneno, email, hash_password)
     add_person =  (''' INSERT INTO person
-                       (MIS, first_name, last_name, mobileno, email)
-                       VALUES (%s, %s, %s, %s, %s) ''')
+                       (MIS, first_name, last_name, mobileno, email, password_hash)
+                       VALUES (%s, %s, %s, %s, %s, %s) ''')
 
     retval = 0
-    retval = db.exec_modifications(add_person, datatuple)
+    retval = db.exec_modification(add_person, datatuple)
     return retval
     
 
@@ -46,7 +51,7 @@ def registerplace(db, placename, store = False, studentaccess = False):
                      VALUES (%s, %s) ''')
 
     retval = 0
-    retval = db.exec_modifications(add_place, datatuple)
+    retval = db.exec_modification(add_place, datatuple)
     if retval == errorcode.ER_DUP_ENTRY:
         retval = ALREADYREGISTERED
     return retval
@@ -74,6 +79,16 @@ def registerclub(db, clubname, managed_by):
     return retval
 
 
+def removeclub(db, cid):
+    removeclub = '''DELETE 
+                    FROM club
+                    WHERE cid = %s'''
+    parameters = (cid,)
+    
+    retval = db.exec_modification(removeclub, parameters)
+    return retval
+
+
 
 def changemanager(db, cid, new_manager):
 
@@ -97,7 +112,7 @@ def changemanager(db, cid, new_manager):
                          WHERE cid = %s ''')
     datatuple = (new_manager, cid)
 
-    retval = db.exec_modifications(change_manager, datatuple)
+    retval = db.exec_modification(change_manager, datatuple)
     return retval
 
 def addclubmember(db, cid, member_MIS):
@@ -108,7 +123,7 @@ def addclubmember(db, cid, member_MIS):
                     VALUES (%s, %s) ''')
 
     retval = 0
-    retval = db.exec_modifications(add_member, datatuple)
+    retval = db.exec_modification(add_member, datatuple)
 
     if retval == errorcode.ER_DUP_ENTRY:
         return ALREADYREGISTERED
@@ -145,7 +160,7 @@ def addkey(db, place_pid, store_pid = None):
     add_key = ('''INSERT INTO killi
                   (kid, place_pid, person_MIS, place_pid_store)
                   VALUES (%s, %s, %s, %s) ''')
-    retval = db.exec_modifications(add_key, keydata)
+    retval = db.exec_modification(add_key, keydata)
     return retval
 
 
@@ -156,7 +171,7 @@ def grantkeypermission(db, club_cid, place_pid, key_kid):
                           (club_cid, key_kid, key_place_pid)
                           VALUES (%s, %s, %s) ''')
     
-    retval = db.exec_modifications(permissionentry, datatuple)
+    retval = db.exec_modification(permissionentry, datatuple)
     if retval == errorcode.ER_NO_REFERENCED_ROW_2:
         retval = KEYDOESNOTEXIST
     elif retval == errorcode.ER_DUP_ENTRY:
@@ -171,7 +186,7 @@ def removekeypermission(db, club_cid, place_pid, key_kid):
                           FROM club_canuse_key
                           WHERE (club_cid, key_kid, key_place_pid) =  (%s, %s, %s) ''')
     
-    retval = db.exec_modifications(permissionentry, datatuple)
+    retval = db.exec_modification(permissionentry, datatuple)
     if retval == errorcode.ER_NO_REFERENCED_ROW_2:
         print("Key does not exist")
         retval = KEYDOESNOTEXIST
@@ -202,7 +217,7 @@ def pickup_key(db, person_MIS, place_pid, key_kid):
                             AND person_MIS IS NULL
                             AND place_pid_store IS NOT NULL''')
 
-    retval = db.exec_modifications(change_holdership, datatuple)
+    retval = db.exec_modification(change_holdership, datatuple)
     
     if retval == 0 and db.latestrowcount == 0:
         print(db.latestrowcount)
@@ -229,7 +244,7 @@ def place_key(db, person_MIS, place_pid, key_kid, where_pid):
                  SET person_MIS = NULL,
                      place_pid_store = %s
                  WHERE (place_pid, kid) = (%s, %s) and person_MIS = %s''')
-    retval = db.exec_modifications(putkey, datatuple)
+    retval = db.exec_modification(putkey, datatuple)
     if retval == 0 and db.latestrowcount == 0:
         retval = DONOTHAVEKEY
     elif retval == 0:
@@ -238,7 +253,7 @@ def place_key(db, person_MIS, place_pid, key_kid, where_pid):
                              FROM request_key
                              WHERE (key_id, place_pid) = (%s, %s)''')
         datatuple = (key_kid, place_pid)
-        db.exec_modifications(deleterequests, datatuple)
+        db.exec_modification(deleterequests, datatuple)
 
     return retval
 
@@ -263,7 +278,7 @@ def request_key(db, person_MIS, place_pid, key_kid):
                       VALUES (%s, %s, %s)''')
     datatuple = (person_MIS, place_pid, key_kid)
 
-    retval = db.exec_modifications(makerequest, datatuple)
+    retval = db.exec_modification(makerequest, datatuple)
     if retval == errorcode.ER_DUP_ENTRY:
         retval = ALREADYREGISTERED
 
@@ -290,7 +305,7 @@ def transfer_key(db, destination_person_MIS, place_pid, key_kid):
                              WHERE (key_id, place_pid) = (%s, %s)''')
         datatuple = (key_kid, place_pid)
     
-        retval = db.exec_modifications(deleterequests, datatuple)
+        retval = db.exec_modification(deleterequests, datatuple)
     
     return retval
 
@@ -303,7 +318,7 @@ def kickuser(db, kicker_manager, kicked_member, club_cid):
                    WHERE (person_MIS, club_cid) = (%s, %s)'''
     datatuple = (kicked_member, club_cid)
 
-    retval = db.exec_modifications(deletion, datatuple)
+    retval = db.exec_modification(deletion, datatuple)
     return retval
                    
 
@@ -314,5 +329,14 @@ def change_storage(db, place_pid):
                       WHERE pid = %s'''
     parameters = (place_pid,)
 
-    retval = db.exec_modifications(modification, parameters)
+    retval = db.exec_modification(modification, parameters)
+    return retval
+
+def close_place_down(db, place_pid):
+    deletion = '''DELETE
+                  FROM place
+                  WHERE pid = %s'''
+    parameters = (place_pid,)
+    # Hopefully everything will follow by cascade
+    retval = db.exec_modification(deletion, parameters)
     return retval

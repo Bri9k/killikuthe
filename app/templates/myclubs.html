@@ -4,6 +4,8 @@
 
 {% block main %}
 
+
+{% if clubs | length != 0 %}
 <table class="table table-bordered table-dark">
 	<thead>
 	</thead><thead>
@@ -12,19 +14,24 @@
 			<th>Club</th>
 		</tr>
 	</thead>
-		{% for club_id, clubname in clubs %}
+	{% for club_id, clubname in clubs %}
 
-		<tr>
-			<td>{{ loop.index }}</td>
-			<td>{{ clubname }}</td>
-		</tr>
+	<tr>
+		<td>{{ loop.index }}</td>
+		<td>{{ clubname }}</td>
+	</tr>
 
-		{% endfor %}
+	{% endfor %}
 
 	</tbody>
 
 </table>
-	<p>
-	{{ error }}
-	</p>
+{% else %}
+<h4>
+	You are not a member of any club. Approach a club manager to join one!
+</h4>
+{% endif %}
+<p>
+{{ error }}
+</p>
 {% endblock %}

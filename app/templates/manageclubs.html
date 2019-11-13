@@ -2,6 +2,10 @@
 
 {% extends "userlayout.html" %}
 
+{% block user %}
+	{{ me }}
+{% endblock %}
+
 {% block main %}
 
 {% if clubs | length != 0 %}
@@ -36,9 +40,10 @@
 
 </table>
 {% else %}
-<p>
-Unfortunately, you are not a manager of any club. DON'T PANIC- lots of opportunities to get political around here
-</p>
+<h4>
+	You are not the manager of any club. <br>
+	DON'T PANIC- just start a new one ;)
+</h4>
 {% endif %}
 	<p>
 	{{ error }}

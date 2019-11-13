@@ -41,7 +41,7 @@
 9. Pick up a key- change it's location from a place to a person
 10. Place a key- change it's location from a person to a storage place
 
-> Moving a key from one person to another should be a handshake. Else a person giving could falsely claim to have given it, and the person taking it will falsely claim to have taken it. The mechanism here is that a person requests the holder to transfer the key to them. The holder confirms the transfer when the physical transfer happens.
+> Moving a key from one person to another should be a handshake. Else a person giving could falsely claim to have given it, and the person taking it may falsely claim to have taken it. The mechanism here is that a person requests the holder to transfer the key to them. The holder confirms the transfer when the physical transfer happens.
 
 11. Request a key from a person
 12. Transfer a key to a person requesting it

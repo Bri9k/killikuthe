@@ -2,6 +2,11 @@
 
 {% extends "userlayout.html" %}
 
+
+{% block user %}
+	{{ me }}
+{% endblock %}
+
 {% block main %}
 
 <form action="/user/managethisclub" method="post">

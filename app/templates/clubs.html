@@ -42,6 +42,13 @@
 			<td>{{ manager_name }} {{ manager_last }}</td>
 			<td>{{ manager_phoneno }}</td>
 			<td>{{ manager_email }}</td>
+			<td>
+				<form action="/admin/clubs" method="POST">
+					<button type="submit" class="btn-primary" id="remove" name="remove" value="{{ club_id }}">
+						Kick!
+					</button>
+				</form>
+			</td>
 		</tr>
 
 		{% endfor %}

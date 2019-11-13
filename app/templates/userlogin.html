@@ -4,10 +4,15 @@
 
 <div class="text-center">
 	<form class="form-signin" action="/user/mykeys" method="POST">
+		<img class="mb-4" src="../static/images/killikuthelogo.png">
 		<div class="container">
 			<label for="inputEmail" class="sr-only">MIS</label>
-			<input type="text" id="inputusername" class="form-control" name="inputusername"  placeholder="MIS Number" autofocus>
+			<input type="text" id="inputusername" class="form-control" name="inputusername"  placeholder="MIS Number" autofocus required>
 		</div>
+		<br>
+		<div class="container">
+			<label for="password" class="sr-only"> Password </label>
+			<input type="password" id="password" class="form-control" name="password" placeholder="Password" required>
 		<br>
 		<button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
 	</form>
@@ -15,10 +20,10 @@
 
 <hr>
 
-<div class="text-center">
-	<form action="/register" methods="POST">
-		<button class="btn  btn-lg btn-primary" "btn-block" type="submit">Register</button>
-	</form>
+<div width="90%" align="center">
+<form action="/register" methods="POST">
+	<button class="btn-block btn-primary btn-lg" type="submit">Register</button>
+</form>
 </div>
 
 {% endblock %}

@@ -5,6 +5,11 @@
 
 {% block main %}
 
+
+{% block user %}
+	{{ me }}
+{% endblock %}
+
 {% if held | length != 0 %}
 <div >
 <h5 align="top" >Keys I hold</h5>

@@ -8,7 +8,7 @@
 		<meta name="author" content="">
 		<link rel="icon" href="../../../../favicon.ico">
 
-		<title>Killi Kuthe?: {% block title %} {% endblock %}</title>
+		<title>Killi Kuthe? </title>
 
 		<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
 
@@ -22,10 +22,7 @@
 	<body>
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 navbar-static-top">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link" href="/">Home</a>
-				</li>
-				<li class="nav-item active">
+				<li class="nav-item">
 					<a class="nav-link" href="/user/mykeys">My Keys</a>
 				</li>
 				<li class="nav-item">
@@ -33,6 +30,14 @@
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="/user/mymembership">My Clubs</a>
+				</li>
+				<li class="nav-item navbar-end">
+					{% block user %} {% endblock %}
+				</li>
+				<li class="nav-item navbar-right">
+					<a class="nav-link" href="/">
+						Log Out
+					</a>
 				</li>
 			</ul>
 		</nav>

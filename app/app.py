@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, session, redirect
 from modifications import *
 from queries import *
 from database import database
-from config import KILLIDBCONFIG
+from config import *
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -12,6 +12,7 @@ db = database(KILLIDBCONFIG)
 
 @app.route('/', methods = ['GET'])
 def main_screen():
+    session.clear()
     return render_template("index.html")
 
 @app.route('/register', methods = ['GET'])
@@ -23,14 +24,16 @@ def signin_register():
     print("Request", request)
     print("Form Is Empty", request.form)
     firstname = request.form.get('firstName')
+    password = request.form.get('password')
+    password2 = request.form.get('password1')
     lastname = request.form['lastName']
     mis = request.form['username']
     email = request.form['email'] 
     phoneno = request.form['phoneno']
 
-    registered = registeruser(db, mis, firstname, lastname, phoneno, email)
+    registered = registeruser(db, mis, firstname, lastname, phoneno, email, password, password2)
 
-    errorlist = [(LARGENAME, "Name too large"), (MISERROR, "MIS Invalid"), (EMAIL, "Email Invalid"), (WRONGNO, "Phone number invalid"), (ALREADYREGISTERED, "Invalid Registration")]
+    errorlist = [(LARGENAME, "Name too large"), (MISERROR, "MIS Invalid"), (EMAIL, "Email Invalid"), (WRONGNO, "Phone number invalid"), (ALREADYREGISTERED, "Invalid Registration"), (PASSWORD, "Passowords Don't Match")]
     if registered != 0:
         for error in errorlist:
             if registered == error[0]:
@@ -55,7 +58,7 @@ def userkeys():
     print(request.form)
     if "inputusername" in request.form:
         print("Logging in")
-        if not user_login(db, request.form["inputusername"]):
+        if not user_login(db, request.form["inputusername"], request.form["password"]):
             return render_template("error.html", mainerror = "Sorry", suberror = "Unable to Log In")
 
         mis = request.form["inputusername"]
@@ -70,10 +73,12 @@ def userkeys():
         mis = request.form['username']
         email = request.form['email'] 
         phoneno = request.form['phoneno']
+        password = request.form['password']
+        password1 = request.form['password1']
 
-        registered = registeruser(db, mis, firstname, lastname, phoneno, email)
+        registered = registeruser(db, mis, firstname, lastname, phoneno, email, password, password1)
 
-        errorlist = [(LARGENAME, "Name too large"), (MISERROR, "MIS Invalid"), (EMAIL, "Email Invalid"), (WRONGNO, "Phone number invalid"), (ALREADYREGISTERED, "Invalid Registration")]
+        errorlist = [(LARGENAME, "Name too large"), (MISERROR, "MIS Invalid"), (EMAIL, "Email Invalid"), (WRONGNO, "Phone number invalid"), (ALREADYREGISTERED, "Invalid Registration"), (PASSWORD, "Passwords do not match")]
         message = None
         if registered != 0:
             for error in errorlist:
@@ -158,7 +163,7 @@ def showclubs():
     my_mis = session["mis"]
     clubs_I_manage = clubs_managed_by(db, my_mis)
 
-    return render_template("manageclubs.html", clubs = clubs_I_manage)
+    return render_template("manageclubs.html", clubs = clubs_I_manage, me = session["mis"])
 
 @app.route('/user/managethisclub', methods = ["POST"])
 def manageclub():
@@ -187,7 +192,7 @@ def manageclub():
     
     members = getmembersofclubimanage(db, cid, my_mis)
 
-    return render_template("managethisclub.html", members = members, error = error, all_users = getallcandidates_notme(db, my_mis))
+    return render_template("managethisclub.html", members = members, error = error, all_users = getallcandidates(db, cid), me = session["mis"])
 
 
 @app.route('/user/mymembership', methods = ["GET", "POST"])
@@ -210,7 +215,7 @@ def myclubs():
             return render_template("error.html", mainerror = "You may not access this URL", suberror = "Keep your prying hands to yourself")
 
     mis = session["mis"]
-    return render_template("myclubs.html", clubs = get_myclubs(db, mis))
+    return render_template("myclubs.html", clubs = get_myclubs(db, mis), me = session["mis"])
 
 
 
@@ -241,6 +246,11 @@ def manageplaces():
         elif "change_store" in request.form:
             which_place = int(request.form["change_store"])
             ret = change_storage(db, which_place)
+        elif "close" in request.form:
+            which_place = int(request.form["close"])
+            ret = close_place_down(db, which_place)
+            if ret != 0:
+                pass
 
         else:
             print("GOT A CHANGE REQUEST", request.form, request.args)
@@ -297,6 +307,12 @@ def manageclubs():
                 error = "Manager chosen invalid"
             elif retval != 0:
                 error = "Unable to register club" + placename
+
+        elif "remove" in request.form:
+            who_to_remove = int(request.form["remove"])
+            retval = removeclub(db, who_to_remove)
+            if retval != 0:
+                pass
         else:
             print("GOT A CHANGE REQUEST", request.form, request.args)
 

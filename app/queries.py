@@ -1,5 +1,6 @@
 from errors import *
 from mysql.connector import errorcode
+from werkzeug.security import check_password_hash
 
 def getpeople(db):
     search = '''SELECT MIS, first_name, last_name
@@ -114,15 +115,22 @@ def get_key_requests_to_me(db, person_MIS):
 
     return db.query(search, parameters)
 
-def user_login(db, person_MIS):
-    search = '''SELECT COUNT(*)
+def user_login(db, person_MIS, password):
+    search = '''SELECT password_hash
                 FROM person
                 WHERE MIS = %s'''
     parameters = (person_MIS,)
 
     result = db.query(search, parameters)
-    exists = result[0][0] == 1
-    return exists
+    exists = len(result) != 0
+
+    if not exists:
+        return False
+
+    hash_brownies = result[0][0]
+    print(hash_brownies)
+
+    return exists and check_password_hash(hash_brownies, password)
 
 def valid_places_for_key(db, place_pid):
     search = '''SELECT DISTINCT pid, name
@@ -159,11 +167,14 @@ def get_myclubs(db, person_MIS):
     parameters = (person_MIS,)
     return db.query(search, parameters)
 
-def getallcandidates_notme(db, my_mis):
+def getallcandidates(db, club_cid):
     search = '''SELECT MIS, first_name, last_name
                 FROM person
-                WHERE MIS <> %s'''
-    parameters = (my_mis,)
+                WHERE MIS NOT IN
+                (SELECT person_MIS
+                FROM person_memberof_club
+                WHERE club_cid = %s)'''
+    parameters = (club_cid,)
     return db.query(search, parameters)
 
 def getkeysinfo(db, place_pid):

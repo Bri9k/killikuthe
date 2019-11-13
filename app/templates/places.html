@@ -11,7 +11,7 @@
 			<th>Store?</th>
 			<th>Change</th>
 			<th>Keys</th>
-			<th></th>
+			<th>Delete</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -37,17 +37,23 @@
 				No
 				{% endif %}
 				<td>
-				<form action="/admin/places" method="POST">
-					<button type="submit" name="change_store" id = "change_store" class="btn-primary" value="{{ place_id }}">Change
-					</button>
-				</form>
+					<form action="/admin/places" method="POST">
+						<button type="submit" name="change_store" id = "change_store" class="btn-primary" value="{{ place_id }}">Change
+						</button>
+					</form>
 				</td>
 			</td>
-			<td>
-				<form action="/admin/placekeys", method="POST">
+			<form action="/admin/placekeys", method="POST">
+				<td>
 					<button type="submit" class="btn-primary" name="keys" id="keys" value="{{ place_id }}">Keys</button>
-				</form>
-			</td>
+				</td>
+			</form>
+			<form action="/admin/places", method="POST">
+				<td>
+					<button type="submit" class="btn-primary" name="close" id="close" value="{{ place_id }}">Close Down</button>
+				</td>
+			</form>
+
 		</tr>
 
 		{% endfor %}

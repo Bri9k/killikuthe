@@ -9,13 +9,16 @@ DROP TABLE person;
 
 
 CREATE TABLE person (
-	MIS VARCHAR(9) NOT NULL,
+	MIS CHAR(9) NOT NULL,
 	first_name VARCHAR(20) NOT NULL,
 	last_name VARCHAR(20) NOT NULL,
 	mobileno CHAR(10) NOT NULL,
 	email VARCHAR(45) NOT NULL,
+	password_hash CHAR(94), -- for the werkzeug generate_password_hash function
 	PRIMARY KEY (MIS),
-	UNIQUE (email)
+	UNIQUE (email),
+	UNIQUE (mobileno),
+	CONSTRAINT CHECK (email LIKE '_%@_%._%')
 );
 
 CREATE TABLE place (
@@ -23,7 +26,8 @@ CREATE TABLE place (
 	name VARCHAR(45) NOT NULL,
 	store BOOL NOT NULL,
 	PRIMARY KEY (pid),
-	UNIQUE (name)
+	UNIQUE (name),
+	CONSTRAINT CHECK (name LIKE '_%')
 );
 
 
@@ -46,6 +50,7 @@ CREATE TABLE club (
 	managed_by VARCHAR(9) NOT NULL,
 	PRIMARY KEY (cid),
 	FOREIGN KEY (managed_by) REFERENCES person(MIS), -- delete to be handled by application code
+	CONSTRAINT CHECK (clubname LIKE '_%'),
 	UNIQUE (clubname));
 
 

@@ -10,3 +10,7 @@ KILLIDBCONFIG = {
         "host" : LOCALHOST,
         "database": DATABASE,
         'raise_on_warnings': True }
+
+
+
+salt = "livefreeordie"

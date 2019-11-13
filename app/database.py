@@ -23,7 +23,7 @@ class database:
     # @param connection a connection to the mysql server
     # @param query query statement to be executed, with placeholders for parameters in order
     # @param parameters parameters to be substituted in query
-    def exec_insert(self, query, parameters):
+    def exec_modification(self, query, parameters):
         cur = self.cnx.cursor()
         retval = 0
         try:
